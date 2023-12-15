@@ -1,0 +1,63 @@
+classdef preluLayer < nnet.layer.Layer
+    % Example custom PReLU layer.
+
+    properties (Learnable)
+        % Layer learnable parameters.
+
+        % Scaling coefficient.
+        Alpha_pos
+        Alpha_neg
+        
+    end
+
+    methods
+        function layer = preluLayer(args)
+            % layer = preluLayer creates a PReLU layer.
+            %
+            % layer = preluLayer(numChannels,Name=name) also specifies the
+            % layer name.
+
+            arguments
+                args.Name = "";
+            end
+
+            % Set layer name.
+            layer.Name = args.Name;
+
+            % Set layer description.
+            layer.Description = "PReLU";
+        end
+
+        function layer = initialize(layer,layout)
+            % layer = initialize(layer,layout) initializes the learnable
+            % parameters of the layer for the specified input layout.
+
+            % Skip initialization of nonempty parameters.
+            if (~isempty(layer.Alpha_pos)) && (~isempty(layer.Alpha_neg))
+                return
+            end
+
+            % Input data size.
+            sz = layout.Size;
+            ndims = numel(sz);
+
+            % Find number of channels.
+            idx = finddim(layout,"C");
+            numChannels = sz(idx);
+
+            % Initialize Alpha.
+            szAlpha = ones(1,ndims);
+            szAlpha(idx) = numChannels;
+            layer.Alpha_pos = zeros(szAlpha);
+            layer.Alpha_neg = ones(szAlpha);
+        end
+
+        function Z = predict(layer, X)
+            % Z = predict(layer, X) forwards the input data X through the
+            % layer and outputs the result Z.
+
+            Z = layer.Alpha_pos .* max(0, X) + layer.Alpha_neg .* min(0, X);
+        end
+    end
+end
+
