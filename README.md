@@ -28,7 +28,7 @@ This repository consists of four folders.
   The experimental training data can be downloaded here: 'https://guoyang.work/data/TrainingDatabase_GradAct_resnet50_Cls.zip'
   
 - 'FullGradCAM_Yolov5s': The FullGradCAM algorithm for Yolo-v5s model. Main function: 'main.py'.
-- 
+
 - 'FullGradCAM_FasterRCNN': The FullGradCAM algorithm for Faster-RCNN model. Main function: 'main.py'. The model file can be downloaded here: 'https://guoyang.work/data/FasterRCNN_C4_BDD100K.zip'
 
 ## Contact
