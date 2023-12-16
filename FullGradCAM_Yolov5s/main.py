@@ -75,7 +75,7 @@ input_main_dir = 'raw_images'   #Veh_id_img orib_veh_id_task_previous orib_veh_i
 input_main_dir_label = 'raw_images_labels'   #Veh_id_label orib_veh_id_task_previous_label orib_veh_id_task0922_label
 output_main_dir = 'Yolov5s, FullGradCAM++, Layer1'
 
-sel_method = 'saveRawGradAct'  # gradcam, gradcampp, fullgradcam, fullgradcampp, saveRawGradAct, saveRawAllAct
+sel_method = 'fullgradcampp'  # gradcam, gradcampp, fullgradcam, fullgradcampp, saveRawGradAct, saveRawAllAct
 sel_nms = 'NMS'
 sel_prob = 'class'
 sel_norm = 'norm'
