@@ -30,7 +30,7 @@ This repository consists of four folders.
   The model files for pretrained ResNet-50 and Xception can be downloaded here:
   http://guoyang.work/data/ImgClsModelFiles_Xception_ResNet50.zip
   
-- 'FullGradCAM_Yolov5s': The FullGradCAM algorithm for Yolo-v5s model. Main function: 'main.py'.
+- 'FullGradCAM_Yolov5s': The FullGradCAM algorithm for Yolo-v5s model. Main function: 'main.py'. 'yolov5sbdd100k300epoch.pt' is the Yolo-v5s model file trained on BDD-100K. 'yolov5s_COCOPretrained.pt' is the Yolo-v5s model file pretrained on MS-COCO.
 
 - 'FullGradCAM_FasterRCNN': The FullGradCAM algorithm for Faster-RCNN model. Main function: 'main.py'. The model file can be downloaded here: http://guoyang.work/data/FasterRCNN_C4_BDD100K.zip
 
