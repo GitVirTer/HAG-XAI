@@ -19,19 +19,20 @@ This repository consists of four folders.
   - Step 2: Run 'Main_Train_HAGXAI_Yolov5s.m' to train the HAG-XAI model.
  
   Running 'Main_Test_One_Sample_Yolov5s.m' can generate the HAG-XAI saliency map for one sample.
-  The experimental materials and human attention data can be downloaded here: 'http://guoyang.work/data/Data.zip'
+  The experimental materials and human attention data can be downloaded here: http://guoyang.work/data/Data.zip
   
 - 'HAG-XAI_for_ImageClassificationModels': The HAG-XAI training program for image classification models.
   - 'Main_HAGXAI_Train.m' is the training program.
   - 'Image_Classification_Stimuli_ImageNet.zip' is the zipped experimental database.
   
-  The experimental training data can be downloaded here: 'http://guoyang.work/data/TrainingDatabase_GradAct_resnet50_Cls.zip'
+  The experimental training data can be downloaded here: http://guoyang.work/data/TrainingDatabase_GradAct_resnet50_Cls.zip
+
   The model files for pretrained ResNet-50 and Xception can be downloaded here:
-  'http://guoyang.work/data/ImgClsModelFiles_Xception_ResNet50.zip'
+  http://guoyang.work/data/ImgClsModelFiles_Xception_ResNet50.zip
   
 - 'FullGradCAM_Yolov5s': The FullGradCAM algorithm for Yolo-v5s model. Main function: 'main.py'.
 
-- 'FullGradCAM_FasterRCNN': The FullGradCAM algorithm for Faster-RCNN model. Main function: 'main.py'. The model file can be downloaded here: 'http://guoyang.work/data/FasterRCNN_C4_BDD100K.zip'
+- 'FullGradCAM_FasterRCNN': The FullGradCAM algorithm for Faster-RCNN model. Main function: 'main.py'. The model file can be downloaded here: http://guoyang.work/data/FasterRCNN_C4_BDD100K.zip
 
 ## Contact
 
