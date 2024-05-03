@@ -5,6 +5,11 @@ import gc
 import util_my_yolov5 as ut
 import numpy as np
 
+import math
+import cv2
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
 def find_yolo_layer(model, layer_name):
     """Find yolov5 layer to calculate GradCAM and GradCAM++
 
@@ -21,6 +26,54 @@ def find_yolo_layer(model, layer_name):
     for h in hierarchy[1:]:
         target_layer = target_layer._modules[h]
     return target_layer
+
+def generate_mask(image_size, grid_size, prob_thresh):
+    image_w, image_h = image_size
+    grid_w, grid_h = grid_size
+    cell_w, cell_h = math.ceil(image_w / grid_w), math.ceil(image_h / grid_h)
+    up_w, up_h = (grid_w + 1) * cell_w, (grid_h + 1) * cell_h
+
+    mask = (np.random.uniform(0, 1, size=(grid_h, grid_w)) <
+            prob_thresh).astype(np.float32)
+    mask = cv2.resize(mask, (up_w, up_h), interpolation=cv2.INTER_LINEAR)
+    offset_w = np.random.randint(0, cell_w)
+    offset_h = np.random.randint(0, cell_h)
+    mask = mask[offset_h:offset_h + image_h, offset_w:offset_w + image_w]
+    return mask
+
+def mask_image(input_img, mask):
+    # masked = ((image.astype(np.float32) / 255 * np.dstack([mask] * 3)) *
+    #           255).astype(np.uint8)
+    device = input_img.device
+    mask = torch.tensor(mask, dtype=torch.float32, device=device)
+    mask = mask.unsqueeze(0).unsqueeze(0)
+    mask = mask.expand_as(input_img)
+    output_img = input_img * mask
+
+    # output_img_np = output_img.cpu().squeeze(0).permute(1, 2, 0).numpy()
+    # plt.imshow(output_img_np)
+    # plt.axis('off')
+    # plt.show()
+
+    return output_img
+
+
+def bbox_iou(bbox1, bbox2):
+    x0 = max(bbox1[1], bbox2[1])
+    y0 = max(bbox1[0], bbox2[0])
+    x1 = min(bbox1[3], bbox2[3])
+    y1 = min(bbox1[2], bbox2[2])
+
+    intersection_area = max(0, x1 - x0 + 1) * max(0, y1 - y0 + 1)
+
+    bbox1_area = (bbox1[3] - bbox1[1] + 1) * (bbox1[2] - bbox1[0] + 1)
+    bbox2_area = (bbox2[3] - bbox2[1] + 1) * (bbox2[2] - bbox2[0] + 1)
+
+    union_area = bbox1_area + bbox2_area - intersection_area
+
+    iou = intersection_area / union_area
+
+    return iou
 
 
 class YOLOV5XAI:
@@ -76,6 +129,37 @@ class YOLOV5XAI:
         self.model(torch.zeros(1, 3, *img_size, device=device))
         print('[INFO] saliency_map size :', self.activations[2].shape[2:])
 
+    def generate_saliency_map(self, image, target_box, prob_thresh=0.5, grid_size=(16, 16), n_masks=5000, seed=0):
+        np.random.seed(seed)
+        # image_h, image_w = image.shape[:2]
+        image_w, image_h = image.size(3), image.size(2)
+        res = np.zeros((image_h, image_w), dtype=np.float32)
+
+        for _ in range(n_masks):
+
+
+            mask = generate_mask(image_size=(image_w, image_h), grid_size=grid_size, prob_thresh=prob_thresh)
+            masked = mask_image(image, mask)
+
+            with torch.no_grad():
+                preds, logits, preds_logits, classHead_output = self.model(masked)
+            pred_list = preds[0][0]
+            pred_class = preds[2][0]
+            score_list = preds[3][0]
+
+            max_score = 0
+            for bbox, cls, score in zip(pred_list, pred_class, score_list):
+                if cls in self.sel_classes:
+                    iou_score = bbox_iou(target_box, bbox) * score
+                    max_score = max(max_score, iou_score)
+
+            res += mask * max_score
+
+            print(_)
+            del masked, preds, logits, preds_logits, classHead_output
+            torch.cuda.empty_cache()
+
+        return res
 
 
     def forward(self, input_img, class_idx=True):
@@ -144,7 +228,11 @@ class YOLOV5XAI:
                         raw_data_rec.append(raw_data)
                     elif self.sel_XAImethod == 'saveRawAllAct':
                         saliency_map = ut.gradcampp_operation(activations, gradients)
-
+                    elif self.sel_XAImethod == 'DRISE':
+                        res = self.generate_saliency_map(input_img, bbox, prob_thresh=0.5, grid_size=(16, 16), n_masks=2500, seed=0)
+                        res_expanded = np.expand_dims(np.expand_dims(res, axis=0), axis=0)
+                        saliency_map = torch.tensor(res_expanded, device=input_img.device)
+                        
                     saliency_map = F.upsample(saliency_map, size=(h, w), mode='bilinear', align_corners=False)
 
                     if self.sel_norm_str == 'norm':
