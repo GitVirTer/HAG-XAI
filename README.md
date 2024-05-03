@@ -20,6 +20,7 @@ This repository consists of four folders.
  
   Running 'Main_Test_One_Sample_Yolov5s.m' can generate the HAG-XAI saliency map for one sample.
   The experimental materials and human attention data can be downloaded here: http://guoyang.work/data/Data.zip
+  Note that the deep learning toolbox is required for running Matlab codes.
   
 - 'HAG-XAI_for_ImageClassificationModels': The HAG-XAI training program for image classification models.
   - 'Main_HAGXAI_Train.m' is the training program.
