@@ -7,8 +7,8 @@ Human Attention Guided eXplainable AI (HAG-XAI) can leverage human attention inf
 
 Please cite the tool using this website repository and the manuscript:
 
-- Liu, G., Zhang, J., Chan, A. B., & Hsiao, J. (2023). Human attention-guided explainable AI for object detection. Proceedings of the Annual Meeting of the Cognitive Science Society, 2023.
-- Liu, G., Zhang, J., Chan, A. B., & Hsiao, J. (2024). Human Attention-Guided Explainable Artificial Intelligence for Computer Vision Models. Neural Networks, 2024.
+- Liu, G., Zhang, J., Chan, A. B., & Hsiao, J. (2023). Human attention-guided explainable AI for object detection. Proceedings of the Annual Meeting of the Cognitive Science Society (CogSci 2023).
+- Liu, G., Zhang, J., Chan, A. B., & Hsiao, J. (2024). Human Attention-Guided Explainable Artificial Intelligence for Computer Vision Models. Neural Networks, 177C (2024), 106392.
 
 ## Usage
 
